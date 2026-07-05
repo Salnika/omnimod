@@ -1,0 +1,60 @@
+{
+  "name": "@omnimod/cli",
+  "version": "0.1.0",
+  "description": "Command-line runner for omnimod codemods.",
+  "keywords": [
+    "cli",
+    "codemod",
+    "omnimod",
+    "styled-components",
+    "vanilla-extract"
+  ],
+  "homepage": "https://salnika.github.io/omnimod/",
+  "bugs": "https://github.com/salnika/omnimod/issues",
+  "license": "MIT",
+  "author": "salnika",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salnika/omnimod.git",
+    "directory": "packages/cli"
+  },
+  "bin": {
+    "omnimod": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "@omnimod/core": "workspace:*",
+    "@omnimod/plugin-jest-to-vitest": "workspace:*",
+    "@omnimod/plugin-lodash-to-es-toolkit": "workspace:*",
+    "@omnimod/plugin-moment-to-dayjs": "workspace:*",
+    "@omnimod/plugin-react-class-to-hooks": "workspace:*",
+    "@omnimod/plugin-redux-to-toolkit": "workspace:*",
+    "@omnimod/plugin-styled-to-vanilla-extract": "workspace:*",
+    "@omnimod/plugin-webpack-to-vite": "workspace:*",
+    "cac": "catalog:",
+    "picocolors": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.2",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
+    "typescript": "^6.0.3",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@omnimod/plugin-jest-to-vitest",
+  "version": "0.1.0",
+  "description": "omnimod plugin: migrate Jest to Vitest.",
+  "keywords": [
+    "codemod",
+    "jest",
+    "migration",
+    "omnimod-plugin",
+    "vitest"
+  ],
+  "homepage": "https://salnika.github.io/omnimod/",
+  "bugs": "https://github.com/salnika/omnimod/issues",
+  "license": "MIT",
+  "author": "salnika",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salnika/omnimod.git",
+    "directory": "packages/plugin-jest-to-vitest"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "@omnimod/core": "workspace:*",
+    "@omnimod/plugin-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.2",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
+    "typescript": "^6.0.3",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

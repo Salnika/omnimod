@@ -1,0 +1,44 @@
+{
+  "name": "omnimod",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A modular, plugin-based codemod tool for TypeScript / JavaScript / React.",
+  "license": "MIT",
+  "author": "salnika",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salnika/omnimod.git"
+  },
+  "type": "module",
+  "scripts": {
+    "ready": "vp run -r build && vp check && vp run knip && vp run -r test",
+    "bootstrap:cli": "node scripts/bootstrap-local-cli.mjs",
+    "build:all": "vp run -r build",
+    "changeset": "changeset",
+    "knip": "knip --no-progress",
+    "release:publish": "node scripts/release-publish.mjs",
+    "test:all": "vp run -r test",
+    "version:apply": "node scripts/release-plan.mjs apply",
+    "version:check": "node scripts/release-plan.mjs check",
+    "version:plan": "node scripts/release-plan.mjs plan",
+    "docs:dev": "npm --prefix docs run dev",
+    "docs:build": "npm --prefix docs run build",
+    "prepare": "vp config"
+  },
+  "devDependencies": {
+    "@changesets/cli": "catalog:",
+    "knip": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.9.0",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

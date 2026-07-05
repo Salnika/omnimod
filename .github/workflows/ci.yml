@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm exec vp run -r build
+
+      - name: Check (format, lint, type-check)
+        run: pnpm exec vp check
+
+      - name: Version plan
+        if: github.event_name == 'pull_request'
+        run: pnpm run version:check -- --since origin/${{ github.base_ref }}
+
+      - name: Knip
+        run: pnpm exec vp run knip
+
+      - name: Test
+        run: pnpm exec vp run -r test
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=moderate
+
+      - name: Build docs
+        run: |
+          npm --prefix docs ci
+          npm --prefix docs run build

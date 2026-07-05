@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
+  "ignoreDependencies": ["vite"],
+  "ignoreFiles": ["docs/.vitepress/config.mts"],
+  "ignoreIssues": {
+    "pnpm-workspace.yaml": ["catalog"],
+  },
+  "workspaces": {
+    "packages/*": {
+      "entry": ["src/index.ts", "tests/**/*.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"],
+      "ignoreDependencies": ["@typescript/native-preview", "vite"],
+    },
+  },
+}

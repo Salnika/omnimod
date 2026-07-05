@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "release-*"
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: npm dist-tag to publish with
+        required: true
+        default: latest
+      dry_run:
+        description: Run publish without uploading packages
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  npm:
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    env:
+      DIST_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.dist_tag || 'latest' }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm exec vp run -r build
+
+      - name: Check
+        run: pnpm exec vp check
+
+      - name: Knip
+        run: pnpm exec vp run knip
+
+      - name: Test
+        run: pnpm exec vp run -r test
+
+      - name: Build docs
+        run: |
+          npm --prefix docs ci
+          npm --prefix docs run build
+
+      - name: Pack dry-run
+        run: pnpm --filter './packages/*' pack --dry-run
+
+      - name: Publish unpublished package versions
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          args=(--tag "$DIST_TAG")
+          if [ "$DRY_RUN" = "true" ]; then
+            args+=(--dry-run)
+          fi
+          pnpm run release:publish -- "${args[@]}"
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/') && env.DRY_RUN != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
